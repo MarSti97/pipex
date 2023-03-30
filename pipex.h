@@ -6,7 +6,7 @@
 /*   By: mstiedl <mstiedl@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/27 13:42:46 by mstiedl           #+#    #+#             */
-/*   Updated: 2023/03/29 18:26:53 by mstiedl          ###   ########.fr       */
+/*   Updated: 2023/03/30 13:44:09 by mstiedl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,9 @@ void    bad_cmd(int *fd, int *files, char **cmd, char *path);
 void    bad_cmd_bonus(int *fd, int file, char **cmd, char *path);
 void    child_bonus(char **av, char **envp, int *fd);
 void    parent_bonus(char **av, char **envp, int *fd, int last);
+void    multi_pipe(char *av, char **envp, int *fd);
+void    open_files_bonus(char **av, int *fds, int ac);
+
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mstiedl <mstiedl@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 21:37:44 by mstiedl           #+#    #+#             */
-/*   Updated: 2022/12/29 12:25:51 by mstiedl          ###   ########.fr       */
+/*   Updated: 2023/03/30 10:35:11 by mstiedl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	ft_putnbr_fd(int nb, int fd)
 		i *= -1;
 	}
 	if (i > 9)
-		len += ft_putnbr_fd((i / 10), 1);
-	len += ft_putchar_fd((i % 10 + 48), 1);
+		len += ft_putnbr_fd((i / 10), fd);
+	len += ft_putchar_fd((i % 10 + 48), fd);
 	return (len);
 }
 

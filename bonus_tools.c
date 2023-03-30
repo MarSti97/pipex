@@ -6,7 +6,7 @@
 /*   By: mstiedl <mstiedl@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:41:29 by mstiedl           #+#    #+#             */
-/*   Updated: 2023/03/29 18:26:13 by mstiedl          ###   ########.fr       */
+/*   Updated: 2023/03/30 10:16:44 by mstiedl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,10 @@ void    bad_cmd_bonus(int *fd, int file, char **cmd, char *path)
 {
     ft_putstr_fd("Invalid command: ", 2);
     ft_putendl_fd(cmd[0], 2);
+    if (file != 0)
+        close(file);
     close(fd[0]);
     close(fd[1]);
-    close(file);
     free_split(cmd);
     free(path);
     exit(0);
