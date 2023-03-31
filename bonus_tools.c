@@ -28,14 +28,12 @@ void    free_split(char **split)
     free(split);
 }
 
-void    bad_cmd_bonus(int *fd, int file, char **cmd, char *path)
+void    bad_cmd_bonus(int *files, char **cmd, char *path)
 {
     ft_putstr_fd("Invalid command: ", 2);
     ft_putendl_fd(cmd[0], 2);
-    if (file != 0)
-        close(file);
-    close(fd[0]);
-    close(fd[1]);
+    close(files[0]);
+    close(files[1]);
     free_split(cmd);
     free(path);
     exit(0);

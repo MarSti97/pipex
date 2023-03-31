@@ -28,12 +28,12 @@ void    close_fds(int *pipe, int *files);
 void    open_file(char **av, int *fds);
 void    bad_cmd(int *fd, int *files, char **cmd, char *path);
 //bonus
-void    bad_cmd_bonus(int *fd, int file, char **cmd, char *path);
-void    child_bonus(char **av, char **envp, int *fd);
-void    parent_bonus(char **av, char **envp, int *fd, int last);
-void    multi_pipe(char *av, char **envp, int *fd);
+void    bad_cmd_bonus(int *files, char **cmd, char *path);
+void    child_bonus(char *av, char **envp, int *fd, int *files);
+void    parent_bonus(char *av, char **envp, int *fd, int *files);
+void	multi_pipe(char *av, char **envp, int *fd, int *files);
 void    open_files_bonus(char **av, int *fds, int ac);
-
-
+void	children(char *av, char **envp, int *file, int arg);
+void	execute(char *av, char **envp, int *files);
 
 #endif
