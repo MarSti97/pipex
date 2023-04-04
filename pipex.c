@@ -5,97 +5,89 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mstiedl <mstiedl@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/27 15:32:46 by mstiedl           #+#    #+#             */
-/*   Updated: 2023/03/29 17:03:09 by mstiedl          ###   ########.fr       */
+/*   Created: 2023/03/29 17:14:59 by mstiedl           #+#    #+#             */
+/*   Updated: 2023/04/04 15:40:17 by mstiedl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
-    int pipe_fds[2];
-    int files[2];
-    pid_t pid;
-    
-    if (ac >= 5)
-    {
-        if (pipe(pipe_fds) == -1) // 0 is for reading, 1 for writing
-            error("Failed to pipe");
-        open_file(av, files);
-        pid = fork();
-        if (pid == -1)
-            error("Failed to fork");
-        else if (pid == 0)
-            child(av, envp, pipe_fds, files);
-        waitpid(pid, NULL, 0);
-        parent(av, envp, pipe_fds, files);
-        close_fds(pipe_fds, files);
-    }
-    else
-        error("Incorrect input\nInput required: <infile> <command1> <command2> <outfile>");
-    return (0);
+	int	files[2];
+	int	i;
+
+	i = 1;
+	if (ac > 4)
+	{
+		if (ft_strncmp("here_doc", av[1], 9) == 0)
+		{
+			if (ac > 5)
+				here_doc(ac, av, envp);
+			else
+				error("Input required: ", 1);
+		}
+		else
+		{
+			open_files(av, files, ac, NULL);
+			while (++i < (ac - 2))
+				children(av[i], envp, files);
+			parent(av[i], envp, files);
+		}
+	}
+	else
+		error("Input required: ", 2);
+	return (0);
 }
 
-char    *find_path(char *cmd, char **envp)
+void	children(char *av, char **envp, int *file)
 {
-    char    **paths;
-    char    *the_path;
-    int     i;
-    
-    cmd = ft_strjoin("/", cmd);
-    i = -1;
-    while (envp[++i])
-    {
-        if (ft_strncmp(envp[i], "PATH", 4) == 0)
-        {
-            paths = ft_split(envp[i] + 5, ':');
-            i = -1; 
-            while (paths[++i])
-            {
-                the_path = ft_strjoin(paths[i], cmd);
-                if (access(the_path, F_OK) == 0)
-                {
-                    free_split(paths);
-                    return (the_path);
-                }
-                free (the_path);
-            }
-        }
-    }
-    return (NULL);
+	int		pipe_fds[2];
+	pid_t	pid;
+
+	if (pipe(pipe_fds) == -1)
+		error("Error (pipe): ", 0);
+	pid = fork();
+	if (pid == -1)
+		error("Error (fork): ", 0);
+	else if (pid == 0)
+	{
+		dup2(file[0], STDIN_FILENO);
+		dup2(pipe_fds[1], STDOUT_FILENO);
+		close(pipe_fds[0]);
+		execute(av, envp, file);
+	}
+	else
+	{
+		close(file[0]);
+		close(pipe_fds[1]);
+		file[0] = pipe_fds[0];
+		waitpid(pid, NULL, 0);
+	}
 }
 
-void    child(char **av, char **envp, int *fd, int *files)
+void	parent(char *av, char **envp, int *files)
 {
-    char    *path;
-    char    **cmd; 
+	char	*path;
+	char	**cmd;
 
-    cmd = ft_split(av[2], 32);
-    dup2(files[0], STDIN_FILENO);
-    dup2(fd[1], STDOUT_FILENO);
-    close(fd[0]);
-    path = find_path(cmd[0], envp);
-    if (!path)
-        bad_cmd(fd, files, cmd, path);
-    execve(path, cmd, envp);
-    free_split(cmd);
-    free(path);
+	cmd = ft_split(av, 32);
+	dup2(files[0], STDIN_FILENO);
+	dup2(files[1], STDOUT_FILENO);
+	path = find_path(cmd[0], envp, -1, -1);
+	if (!path)
+		bad_cmd(files, cmd, path);
+	execve(path, cmd, envp);
 }
 
-void    parent(char **av, char **envp, int *fd, int *files)
+void	execute(char *av, char **envp, int *files)
 {
-    char    *path;
-    char    **cmd; 
+	char	*path;
+	char	**cmd;
 
-    cmd = ft_split(av[3], 32);
-    dup2(fd[0], STDIN_FILENO);
-    dup2(files[1], STDOUT_FILENO);
-    close(fd[1]);
-    path = find_path(cmd[0], envp);
-    if (!path)
-        bad_cmd(fd, files, cmd, path);
-    execve(path, cmd, envp);
-    free_split(cmd);
-    free(path);
+	cmd = ft_split(av, 32);
+	path = find_path(cmd[0], envp, -1, -1);
+	if (!path)
+		bad_cmd(files, cmd, path);
+	execve(path, cmd, envp);
 }

@@ -1,4 +1,4 @@
-SRC = bonus.c bonus_tools.c
+SRC = pipex.c pipex_tools.c heredoc.c
 OBJ = $(SRC:.c=.o)
 NAME = pipex
 FLAGS = -Wall -Werror -Wextra -g
@@ -17,18 +17,18 @@ all : $(NAME)
 	@$(CC) $(FLAGS) -c $< -o $@
 
 $(NAME): $(OBJ)
-#	@make $(LIBFT)
-	@$(CC) $(OBJ) -Llibft -lft -g -o $(NAME)
+	@make $(LIBFT)
+	@$(CC) $(OBJ) -fsanitize=address -Llibft -lft -g -o $(NAME)
 	@echo "$(GREEN)>>>> Compiled <<<<$(END)"
 
 clean :
 	@$(RM) $(OBJ)
-#	@make clean $(LIBFT)
+	@make clean $(LIBFT)
 	@echo "$(RED)>>>> Cleaned <<<<$(END)"
 
 fclean : clean 
 	@$(RM) $(NAME)
-#	@make fclean $(LIBFT)
+	@make fclean $(LIBFT)
 	@echo "$(RED)>>>> All <<<<$(END)"
 
 re : fclean all
