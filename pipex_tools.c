@@ -6,7 +6,7 @@
 /*   By: mstiedl <mstiedl@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 17:41:29 by mstiedl           #+#    #+#             */
-/*   Updated: 2023/04/04 15:41:14 by mstiedl          ###   ########.fr       */
+/*   Updated: 2023/04/05 10:05:34 by mstiedl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	bad_cmd(int *files, char **cmd, char *path)
 	close(files[1]);
 	free_split(cmd);
 	free(path);
-	exit(0);
+	exit(EXIT_FAILURE);
 }
 
 char	*find_path(char *cmd, char **envp, int i, int j)
